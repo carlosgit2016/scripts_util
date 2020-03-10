@@ -24,4 +24,6 @@ function ConnectRemoteComputerInlinePassword {
     Enter-PSSession $SessionRemoteComputer    
 }
 
-
+# Run the function using password inline
+# Example
+ConnectRemoteComputerInlinePassword -ComputerName "computer_name" -UserName "user_name" -Password (ConvertTo-SecureString "password" -AsPlainText -Force)
