@@ -1,3 +1,5 @@
+# Run Powershell with administrator
+
 function ConfigureWinRMAndTrustedHosts {
 
     try {
@@ -19,3 +21,6 @@ function ConfigureWinRMAndTrustedHosts {
     }
 
 }
+
+# Run the function
+ConfigureWinRMAndTrustedHosts
