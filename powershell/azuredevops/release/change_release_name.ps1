@@ -4,7 +4,7 @@ $Token = $personalToken
 #Encode token to Base64
 $EncodedTokenBase64 = [Convert]::ToBase64String([Text.Encoding]::ASCII.GetBytes(("{0}:{1}" -f '', $Token)))
 
-$Headers = @{"Content-Type" = "application/json"; "Authorization" = "Basic $($EncodedTokenBase64)" }
+$Headers = @{"Authorization" = "Basic $($EncodedTokenBase64)" }
 
 $pipeline = Invoke-RestMethod -Uri $url -Headers $Headers
 
@@ -16,4 +16,4 @@ $pipeline.name = "new_release_name"
 ####****************** update the modified object **************************
 $json = @($pipeline) | ConvertTo-Json -Depth 99
 
-Invoke-RestMethod -Uri $url -Method Put -Body $json -Headers $Headers
+Invoke-RestMethod -Uri $url -Method Put -Body $json -Headers $Headers -ContentType "application/json;charset=utf-8"
