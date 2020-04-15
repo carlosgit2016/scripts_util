@@ -10,5 +10,5 @@ function GetObjProperties {
 }
 
 # Example to use
-$props GetObjProperties -ObjectToPrintProperties (Get-Service) # Get all properties of the object returned by Get-Service cmdlet 
+$props = GetObjProperties -ObjectToPrintProperties (Get-Service) # Get all properties of the object returned by Get-Service cmdlet 
 Write-Host $props
