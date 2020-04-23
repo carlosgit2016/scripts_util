@@ -16,7 +16,7 @@ function MakeRequest ([Parameter(Mandatory)]$Body, [Parameter(Mandatory)]$Method
 
 ## Example Put a new information in a release pipeline
 
-$url = "https://vsrm.dev.azure.com/{organization}/{project}/_apis/release/definitions/6?api-version=5.1"
+$url = "https://vsrm.dev.azure.com/{organization}/{project}/_apis/release/definitions/{release_id}?api-version=5.1"
 $token = "my_pat"
 $body = '{ "my": "body pipeline" }'
 
