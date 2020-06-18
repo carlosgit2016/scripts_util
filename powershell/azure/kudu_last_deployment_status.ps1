@@ -7,7 +7,7 @@ function GetLastDeployment {
         [String]$Password
     )
 
-    $Response = curl -s -u "$($User):$Password" $SiteName | convertfrom-json;
+    $Response = curl -s -u "$($User):$Password" "https://$SiteName.scm.azurewebsites.net/api/deployments" | convertfrom-json;
     $LastDeploy = curl -s -u "$($User):$Password" $Response[0].log_url | convertfrom-json;
     foreach ($info in $LastDeploy){
         Write-Output "================================================== $($info.log_time) ================================================"
