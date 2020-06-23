@@ -1,3 +1,7 @@
+const [actualTime, resizedTime] = process.argv.splice(2);
+
+console.log(calculateResizeVideo(actualTime, resizedTime));
+
 function calculateResizeVideo(actualTime, resizedTime) {
 
     const actualTimeSeconds = stringToTime(actualTime);
@@ -21,7 +25,6 @@ function stringToTime(time) {
     const newTime = ((splitedTime[0] * 60) * 60) + (splitedTime[1] * 60) + splitedTime[2]
     return newTime;
 }
-
 
 // Input: 
 // 00:11:32:02
