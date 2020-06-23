@@ -31,4 +31,5 @@ function stringToTime(time) {
 // 00:05:00:00
 
 // Calculate the total percent of increase speed.
-// e.g. calculateResizeVideo("00:13:19:13", "00:05:00") -> 266.33
+// e.g. docker run --rm calculate-resize-video "00:13:00" "00:05:00"
+// 260.00 % you need increase to adjust the time from 13 minutes to 05 minutes
