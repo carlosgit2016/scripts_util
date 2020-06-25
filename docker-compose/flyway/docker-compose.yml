@@ -1,3 +1,5 @@
+# Create a database SQL Server and use flyway to run the migrations that given path
+
 version: '3.5'
 networks:
   database-network:
