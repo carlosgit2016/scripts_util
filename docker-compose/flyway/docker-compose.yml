@@ -1,0 +1,23 @@
+version: '3.5'
+networks:
+  database-network:
+    name: database-network
+services:
+  database:
+    networks:
+      - database-network
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
+    ports:
+      - "1433:1433"
+    environment:
+      ACCEPT_EULA: Y
+      SA_PASSWORD: Mypassword@250214
+      MSSQL_PID: Express
+    container_name: sql_server_database
+  flyway:
+    image: "flyway/flyway"
+    networks:
+      - database-network
+    volumes:
+      - "c:/Temp/sqldir:/flyway/sql"
+    command: ["-url=jdbc:sqlserver://172.18.0.2:1433;databaseName=dbName", "-user=sa", "-password=Mypassword@250214", "migrate"]
