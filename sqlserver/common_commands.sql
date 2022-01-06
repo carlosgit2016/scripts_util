@@ -17,7 +17,7 @@ SELECT job_id, [name] FROM msdb.dbo.sysjobs;
 
 -- Show full history of a job 
 EXEC dbo.sp_help_jobhistory_full  
-   @job_id='3EA411A6-EB6E-416C-AB0F-FAFEF3DBEFB0',
+   @job_id='<job_id>',
    @job_name = N'Log_Failed_Logins',
    @step_id=NULL,
    @sql_message_id=NULL,
@@ -38,7 +38,7 @@ GO
 
 -- Create a new user 
 
-CREATE LOGIN user WITH PASSWORD = 'JEP95zK9bNeBuP8A';
+CREATE LOGIN user WITH PASSWORD = '<strong_passowrd>';
 go
-EXEC master..sp_addsrvrolemember @loginame = N'dbmigration', @rolename = N'sysadmin'
+EXEC master..sp_addsrvrolemember @loginame = N'<login_name>', @rolename = N'sysadmin'
 go
