@@ -1,10 +1,11 @@
+# %%
 '''
     Describe instances with the filter that should be defined in filters function and map the result with the selector function.
 '''
 import os
 import boto3
 
-os.environ['AWS_PROFILE'] = 'main-admin'
+os.environ['AWS_PROFILE'] = '<region>'
 os.environ['REGION'] = 'us-east'
 
 
@@ -27,35 +28,39 @@ def filters():
             {
                 'Name': 'tag:<tag_name>',
                 'Values': [
+                    '<tag_value>',
+                    '<tag_value>',
+                    '<tag_value>',
                     '<tag_value>'
                 ]
             }
         ]
     '''
-    return [
-            {
-                'Name': 'tag:Name',
-                'Values': [
-                    'qasql1'
-                ]
-            }
-        ]
+    return []
 
 def selector(instance):
     '''
         e.g. 'ip': instance['PrivateIpAddress'], 'name': get_instance_name(i), return the name and the private IPs of the instance
     '''
-    return instance['ImageId']
 
-def run():
-    client = boto3.client('ec2')
+    return {'name': get_instance_name(instance), 'ami': instance['ImageId'], 'instance_type': instance['InstanceType'], 'instance_id': instance['InstanceId']}
 
-    response = client.describe_instances(Filters=filters())
+client = boto3.client('ec2')
 
-    target_instances = extend_instances(response)
-    mapped_instances = list(map(selector, target_instances))
-    print(mapped_instances)
+response = client.describe_instances(Filters=filters())
+target_instances = extend_instances(response)
 
+mapped_instances = list(map(selector, target_instances))
+print(mapped_instances)
 
-if __name__ == '__main__':
-    run()
+# %%
+# YAML serializing 
+import yaml
+
+mapped_instances.sort(key=lambda e: e['name'])
+
+print(yaml.dump(mapped_instances))
+
+# %%
+print(len(mapped_instances))
+# %%
