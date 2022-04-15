@@ -3,7 +3,7 @@ import sys
 
 def format_payment_ticket(ticket_number):
     formated_ticket_number = ticket_number.replace(".", "")
-    pattern = r"\s+"
+    pattern = r"\s+|-*"
     formated_ticket_number = re.sub(pattern, "", formated_ticket_number)
     return formated_ticket_number
 
