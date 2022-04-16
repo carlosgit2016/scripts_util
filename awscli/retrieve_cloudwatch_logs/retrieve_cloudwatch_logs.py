@@ -31,6 +31,9 @@ def run(log_group, stream, dump_for_file=False):
 
     
     text_events = "\n".join(events)
+    if text_events.strip() == "":
+        print(f'No logs found for {log_group}:{stream}')    
+        exit(0)
     print(text_events)
 
     if dump_for_file:
@@ -41,12 +44,11 @@ def run(log_group, stream, dump_for_file=False):
         print(f'\n\n Also present in: {temp_file.name}')
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Retrieve entire logs from a desired stream')
+    parser = argparse.ArgumentParser(description='Retrieve entire logs from a desired stream', prog='cloudwatch_logs')
 
-    parser.add_argument('--log-group', required=True, metavar='log_group', nargs=1, help='The name of the cloudwatch log group')
-    parser.add_argument('--log-stream', required=True, metavar='log_stream', nargs=1, help='The name of the cloudwatch log stream')
+    parser.add_argument('--log-group', required=True, metavar='log_group', help='The name of the cloudwatch log group')
+    parser.add_argument('--log-stream', required=True, metavar='log_stream', help='The name of the cloudwatch log stream')
     parser.add_argument('--dump-to-file', action='store_true', help='Dump the logs for a temporary file')
 
     args = parser.parse_args()
-    print(args.log_group)
     run(args.log_group, args.log_stream, args.dump_to_file)
