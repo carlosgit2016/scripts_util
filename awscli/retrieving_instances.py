@@ -3,6 +3,7 @@
 '''
 import os
 import boto3
+import json
 
 os.environ['AWS_PROFILE'] = 'main-admin'
 os.environ['REGION'] = 'us-east'
@@ -54,7 +55,7 @@ def run():
 
     target_instances = extend_instances(response)
     mapped_instances = list(map(selector, target_instances))
-    print(mapped_instances)
+    print(json.dumps(mapped_instances, default=str))
 
 
 if __name__ == '__main__':
