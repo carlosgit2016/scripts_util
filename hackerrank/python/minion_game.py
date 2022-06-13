@@ -1,26 +1,24 @@
-def minion_game(string):
-    # your code goes here
-    # Stuart = consonants
-    # Kevin = vowel AEIOU
-    b = [string[_] for _ in range(len(string))]
-    
-    kevin_score = 0
-    stuart_score = 0
-    S_size = len(b)
-    
-    for i in range(1, S_size+1): # 1, 2, 3, 4, 5, 6
-        for j in range(S_size-(i-1)): # 0, 1, 2, 3, 4, 5
+import time
 
-            sub = "".join(b[j:i+j])
-            is_vowel = sub.startswith(('A', 'E', 'I', 'O', 'U'))
-            if is_vowel:
-                kevin_score+=1
-            else:
-                stuart_score+=1
-            
-    if kevin_score > stuart_score:
-        print('Kevin', kevin_score)
-    elif stuart_score > kevin_score:
-        print('Stuart', stuart_score)
-    else:
-        print('Draw')
+def minion_game(string):
+    t=time.time()
+    start_with_vowels(string)
+    print(t-time.time())
+
+    t2=time.time()
+    string.startswith(('A', 'I', 'O', 'E', 'U'))
+    print(t2-time.time())
+
+    print(t<t2)
+    
+
+def start_with_consoants(s):
+    return not start_with_vowels(s)
+
+
+def start_with_vowels(s) -> bool:
+    f = s[0]
+    return f in ('A', 'I', 'O', 'E', 'U')
+
+if __name__ == '__main__':
+    minion_game('BANANA')
