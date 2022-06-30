@@ -1,0 +1,10 @@
+services:
+  apache:
+    image: httpd:alpine
+    container_name: dev_apache
+    ports:
+      - 80:80
+    volumes:
+      - ./wordpress:/var/www/html:delegated
+      - ./apache/my-httpd.conf:/usr/local/apache2/conf/httpd.conf
+      - ./apache/httpd-vhosts.conf:/usr/local/apache2/conf/extra/httpd-vhosts.conf

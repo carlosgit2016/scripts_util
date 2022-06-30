@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: mypod
+  labels:
+    name: mypod
+spec:
+  initContainers:
+  - name: my-init-container
+    image: alpine:latest
+    command: ["sh", "-c", "echo export Foo=bar > /shared/script.sh && chmod +x /shared/script.sh"]
+    volumeMounts:
+      - name: shared
+        mountPath: /shared
+  containers:
+  - name: mycontainer
+    image: mycustomimage:0.2
+    resources:
+      limits:
+        memory: "32Mi"
+        cpu: "100m"
+    volumeMounts:
+      - name: shared
+        mountPath: /shared
+  volumes:
+    - name: shared
