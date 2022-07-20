@@ -9,8 +9,8 @@ blobs_list = list(blobs_filtered)
 blobs_list_temp = blobs_list
 
 # %%
-len(blobs_list)
-print(json.dumps(blobs_json[0]))
+how_many_page_blobs = len(list(filter(lambda b:  b["properties"]["blobType"] == "PageBlob" if "properties" in b else False, blobs_json)))
+print(how_many_page_blobs)
 
 # %%
 json.dump(blobs_list, open('/tmp/tmp.GSqB4XofWl', 'w'))
@@ -33,3 +33,5 @@ json.dump(should_be_deleted, open('/tmp/tmp.PwFKvPVVdx', 'w'))
 with open('/tmp/tmp.PwFKvPVVdx', 'w') as f:
     f.write("\n".join(list(map(lambda b: b["name"], should_be_deleted))))
     f.close()
+# %%
+print("properties" in {"properties": {}})
