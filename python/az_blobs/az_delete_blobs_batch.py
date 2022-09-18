@@ -1,4 +1,4 @@
-#!/home/cflor/.asdf/shims/python
+#!/bin/python
 import json
 import subprocess
 import tempfile
@@ -40,14 +40,9 @@ def run(account_name, container_name):
     batch_delete_out = subprocess.run(f'az storage blob delete-batch -s {container_name} --account-name {account_name} --if-unmodified-since {date_out.stdout} -o json', shell=True, capture_output=True)
     print(batch_delete_out.stdout)
 
-    
-def lease_and_delete_blob(blob_name, container_name, account_name):
-    lease_out = subprocess.run(f'az storage blob lease break -b {blob_name} -c {container_name} --account-name {account_name} 2> /dev/null', shell=True, capture_output=True)
-    delete_out = subprocess.run(f'az storage blob delete -n {blob_name} -c {container_name} --account-name {account_name} 2> /dev/null', shell=True, capture_output=True)
-    print(lease_out, delete_out)
 
 def greater_than_eight_days(b):
-    eight_days_ago = parse('2022-07-05 00:00:00 UTC').timestamp()
+    eight_days_ago = parse('2022-08-16 00:00:00 UTC').timestamp()
     creation_time = parse(b["properties"]["lastModified"]).timestamp() 
     return creation_time < eight_days_ago
 

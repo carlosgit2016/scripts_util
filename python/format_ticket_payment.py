@@ -1,4 +1,4 @@
-#!/home/cflor/.asdf/shims/python
+#!/usr/bin/python
 
 import re
 import sys
