@@ -10,3 +10,9 @@ aws s3 ls --human-readable
 # Get parameters recursively by path and filter their Name / ARN and Value
 aws ssm get-parameters-by-path --path '<prefix_path>' --with-decryption --recursive | jq '.Parameters[] | {Name, ARN,Value}'
 
+# Describe all target groups in a specific load balancer using a preffix
+local preffix="preffix"
+aws elbv2 describe-load-balancers --query="LoadBalancers[?contains(LoadBalancerName, '$preffix')].LoadBalancerArn" | jq -r '.[]' | xargs -I "{}" aws elbv2 describe-target-groups --load-balancer-arn "{}" | jq '.'
+
+# Describe if the targets in those target groups are healthy
+aws elbv2 describe-load-balancers --query="LoadBalancers[?contains(LoadBalancerName, '$preffix')].LoadBalancerArn" | jq -r '.[]' | xargs -I "{}" aws elbv2 describe-target-groups --load-balancer-arn "{}" | jq -r '.TargetGroups[].TargetGroupArn' | xargs -I "{}" aws elbv2 describe-target-health --target-group-arn "{}" | jq '.TargetHealthDescriptions[]'
