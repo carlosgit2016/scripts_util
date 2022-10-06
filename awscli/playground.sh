@@ -16,3 +16,9 @@ aws elbv2 describe-load-balancers --query="LoadBalancers[?contains(LoadBalancerN
 
 # Describe if the targets in those target groups are healthy
 aws elbv2 describe-load-balancers --query="LoadBalancers[?contains(LoadBalancerName, '$preffix')].LoadBalancerArn" | jq -r '.[]' | xargs -I "{}" aws elbv2 describe-target-groups --load-balancer-arn "{}" | jq -r '.TargetGroups[].TargetGroupArn' | xargs -I "{}" aws elbv2 describe-target-health --target-group-arn "{}" | jq '.TargetHealthDescriptions[]'
+
+# Describe instances filtering by tag name 
+aws ec2 describe-instances --filters "Name=tag:<tag-name>, Values=<value>" --query "Reservations[*].Instances[?contains(Tags[?Key == 'Name'].Value, 'qa_compliance_ad_web')]" | jq '.[]'
+
+# Describe instances health from classic lb
+aws elb describe-instance-health --load-balancer-name <lb-name>
