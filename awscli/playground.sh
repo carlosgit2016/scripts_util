@@ -22,3 +22,22 @@ aws ec2 describe-instances --filters "Name=tag:<tag-name>, Values=<value>" --que
 
 # Describe instances health from classic lb
 aws elb describe-instance-health --load-balancer-name <lb-name>
+
+# Copy LC
+## Describe LC based on some string in their name
+aws autoscaling describe-launch-configurations --query="LaunchConfigurations[?contains(LaunchConfigurationName, '<some-name>')]" | jq '.'
+
+## Create LC using a JSON as input
+aws autoscaling create-launch-configuration --cli-input-json "$(cat < lc.json | tr -d '\n')"
+
+# Copy existent ASG
+
+## Create new autoscaling based on a json file
+aws autoscaling create-auto-scaling-group --cli-input-json "$( cat asg.json | tr -d '\n'  )"
+
+## Watch autoscaling instances lifecycle 
+watch -n2 "aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names <name> | jq '.AutoScalingGroups[].Instances[].LifecycleState'"
+
+## Get all instances and execute a command 
+## Using userdata logs 
+aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names <name> | jq -r '.AutoScalingGroups[].Instances[].InstanceId' | paste -sd "," - | xargs -I "{}" aws-ssm-cmd -i "{}" -s pwsh -o outputs "Get-Content C:\ProgramData\Amazon\EC2-Windows\Launch\Log\UserdataExecution.log"
