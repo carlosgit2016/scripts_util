@@ -41,3 +41,9 @@ watch -n2 "aws autoscaling describe-auto-scaling-groups --auto-scaling-group-nam
 ## Get all instances and execute a command 
 ## Using userdata logs 
 aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names <name> | jq -r '.AutoScalingGroups[].Instances[].InstanceId' | paste -sd "," - | xargs -I "{}" aws-ssm-cmd -i "{}" -s pwsh -o outputs "Get-Content C:\ProgramData\Amazon\EC2-Windows\Launch\Log\UserdataExecution.log"
+
+# Update assume role policy for a specific role
+## Get existent assume role policy
+aws iam get-role --role-name "<role>" | jq '.Role.AssumeRolePolicyDocument' > PackerServicePolicy.json
+## Update assume role policy
+aws iam update-assume-role-policy --role-name '<role>' --policy-document file://PackerServicePolicy.json

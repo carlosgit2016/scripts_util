@@ -32,6 +32,3 @@ kafka-topics --create --bootstrap-server localhost:9092 --topic "mytopic.test.0"
 
 # Producing a message to the topic
 cat payload.json | tr -d '\n' | kafka-console-producer.sh --bootstrap-server pkc-4k6zp.eastus2.azure.confluent.cloud:9092 --topic pubsub.connector.test.0 --property key.separator=,
-
-
-cat one_line_cloud_event.json | kafka-console-producer --producer.config /home/cflor/.kafka-tools/config --broker-list pkc-4k6zp.eastus2.azure.confluent.cloud:9092 --topic sample-topic --property parse.key=true --property key.separator=,
