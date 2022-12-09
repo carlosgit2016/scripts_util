@@ -47,3 +47,7 @@ aws autoscaling describe-auto-scaling-groups --auto-scaling-group-names <name> |
 aws iam get-role --role-name "<role>" | jq '.Role.AssumeRolePolicyDocument' > PackerServicePolicy.json
 ## Update assume role policy
 aws iam update-assume-role-policy --role-name '<role>' --policy-document file://PackerServicePolicy.json
+
+# VPC
+## Describe all subnets cidrblock using a vpc id
+aws ec2 describe-subnets --query "Subnets[?VpcId == 'vpc-050c6a1f458d6bc1d']" | jq -r '.[].CidrBlock'

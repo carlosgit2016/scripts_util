@@ -13,16 +13,27 @@ def filter_by_environment(build, environment):
             return build['env']['ENVIRONMENT'] == environment and build['blocked'] == False
 
 
-def run(environment, org, pipeline, buildkite_token):
+def run(environment, org, pipeline, buildkite_token, pages=10):
     '''
         Given an environment <env> return the first failed build along side with the set of blocked / successfully that it founds
     '''
     buildkite = Buildkite()
     buildkite.set_access_token(buildkite_token)
     build = buildkite.builds()
-    builds = build.list_all_for_pipeline(org, pipeline, branch='master', states=[
-                                         BuildState.FAILED, BuildState.PASSED])
+    builds = []
 
+    print(f'Retrieving builds from {pipeline} in branch in master')
+    print(f'Limit of pages {pages}')
+    response = build.list_all_for_pipeline(org, pipeline, branch="master", states=[                                                  
+                                         BuildState.FAILED, BuildState.PASSED], with_pagination=True, page=0)
+
+    while response.next_page and response.next_page < pages:
+        print(f'Requesting page {response.next_page} of {pages}')
+        response = build.list_all_for_pipeline(org, pipeline, branch="master", states=[
+                                        BuildState.FAILED, BuildState.PASSED], with_pagination=True, page=response.next_page)
+        builds.extend(response.body)
+
+    print(f'Total of builds to filter: {len(builds)}')
     builds_from_environment = list(
         filter(lambda b: filter_by_environment(b, environment), builds))
 
@@ -52,6 +63,8 @@ if __name__ == "__main__":
                         help='The name of the buildkite pipeline')
     parser.add_argument('--buildkite-token', required=True,
                         metavar='buildkite_token', help='Buildkite token')
+    parser.add_argument('--total-of-pages', required=False,
+                        metavar='total_of_pages', help='Total of build pages to include', default=10)
 
     args = parser.parse_args()
-    run(args.environment, args.org, args.pipeline, args.buildkite_token)
+    run(args.environment, args.org, args.pipeline, args.buildkite_token, args.total_of_pages)
