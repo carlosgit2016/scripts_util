@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/csv"
+	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -37,6 +38,16 @@ func get_accesslog(kn string, sa string, proj string) (string, error) {
 
 func main() {
 	ctx := context.Background()
+
+	lf, err := os.OpenFile("log.out", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		panic(err)
+	}
+	defer lf.Close()
+
+	lf.Truncate(0) // cleanup
+	out := io.MultiWriter(lf, os.Stdout)
+	log.SetOutput(out)
 
 	rmService, err := cloudresourcemanager.NewService(ctx)
 	if err != nil {
@@ -83,25 +94,27 @@ func main() {
 				}
 
 				if keysReq == nil {
-					log.Print("No keys found for Service account" + sa.DisplayName)
+					log.Printf("No keys found for Service account %s", sa.DisplayName)
 					continue
 				}
 
 				for _, key := range keysReq.Keys {
 					if key.GetKeyType() != 1 {
-						log.Print("Service account " + sa.Email + " do not contain any user managed key")
+						log.Printf("Service account %s do not contain any user managed key", sa.Email)
 						continue
 					}
 
 					kns := strings.Split(key.Name, "/")
 					kn := kns[len(kns)-1]
-					log.Print(kn)
 					accessLogs, err := get_accesslog(kn, sa.Email, project.ProjectId)
 					if err != nil || accessLogs == "" || accessLogs == "[]" {
-						log.Printf("No access logs found to %s \n %s", sa.Email, err)
+						log.Printf("No access logs found to %s \n %s", sa.Email, err.Error())
 						accessLogs = "N/A"
 					}
-					writer.Write([]string{project.ProjectId, sa.Email, key.Name, accessLogs})
+
+					line := []string{project.ProjectId, sa.Email, key.Name, accessLogs}
+					log.Printf("\n===\n%s\n===\n", strings.Join(line, "\n"))
+					writer.Write(line)
 				}
 			}
 		}
@@ -110,5 +123,5 @@ func main() {
 		panic(err)
 	}
 
-	log.Println("CSV file has been created")
+	log.Printf("CSV file has been created")
 }
