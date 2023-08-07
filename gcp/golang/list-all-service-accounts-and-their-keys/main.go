@@ -39,6 +39,9 @@ func get_accesslog(kn string, sa string, proj string) (string, error) {
 func main() {
 	ctx := context.Background()
 
+	saPrefix := os.Args[1]
+	csvFile := os.Args[2]
+
 	lf, err := os.OpenFile("log.out", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		panic(err)
@@ -59,7 +62,7 @@ func main() {
 		panic(err)
 	}
 
-	file, err := os.Create("service_accounts.csv")
+	file, err := os.Create(csvFile)
 	if err != nil {
 		panic(err)
 	}
@@ -84,6 +87,10 @@ func main() {
 				}
 				if err != nil {
 					break
+				}
+
+				if !strings.Contains(sa.Email, saPrefix) {
+					continue
 				}
 
 				keysReq, err := iamClient.ListServiceAccountKeys(ctx, &iampb.ListServiceAccountKeysRequest{

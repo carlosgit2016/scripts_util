@@ -14,7 +14,9 @@ This golang script located at `main.go` is inteded to list all USER_MANAGED keys
 - jq
 
 ```
-go run main.go
+# saEmail, the service account email to check, it could be a substring
+# csvFile, the file to save the output result
+go run main.go <sa-email> <csvFile>
 # A new file will be created named service_accounts.csv
 ```
 
