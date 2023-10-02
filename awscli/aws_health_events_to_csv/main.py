@@ -22,6 +22,7 @@ def header():
         "Affected Resources",
         "Status",
         "Description",
+        "JIRA issue"
     ]
 
 
@@ -48,7 +49,7 @@ def get_boto_client() -> boto3.Session:
 def setup_csv(f, data):
     with open(f, 'w', newline='') as csvfile:
         spamwriter = csv.writer(csvfile, delimiter='|',
-                                quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                                quotechar='"', quoting=csv.QUOTE_ALL)
         spamwriter.writerow(header())
         for d in data:
             spamwriter.writerow(d)
@@ -60,7 +61,22 @@ def transform_string(s):
     return ' '.join(transformed_parts)
 
 
+def filter_event(e) -> bool:
+    event_type_code = e['eventTypeCode']
+    if event_type_code == "AWS_VPN_REDUNDANCY_LOSS":
+        return False
+    elif event_type_code == "AWS_CLOUDSHELL_OPERATIONAL_NOTIFICATION":
+        return False
+    elif event_type_code == "AWS_SAGEMAKER_SECURITY_NOTIFICATION":
+        return False
+    elif event_type_code == "AWS_SHIELD_ADVANCED_SUBSCRIPTION_RENEWED":
+        return False
+        
+    return True
+
 def populate_and_format(event):
+    if not filter_event(event):
+        return
 
     client = get_boto_client()
     event_arn = event['arn']
@@ -75,7 +91,8 @@ def populate_and_format(event):
             'eventArns': [
                 event_arn
             ]
-        }
+        },
+        maxResults=100
     )
 
     row = [
@@ -87,8 +104,8 @@ def populate_and_format(event):
         transform_string(event['eventTypeCode']),
         ";".join(list(map(
             lambda affected_entity: affected_entity['entityValue'], affected_entities['entities']))),
-        event['statusCode']
-        # event_details['successfulSet'][0]['eventDescription']['latestDescription'], TODO: How to include description that has multiple lines in a csv
+        event['statusCode'],
+        event_details['successfulSet'][0]['eventDescription']['latestDescription'], # TODO: How to include description that has multiple lines in a csv
     ]
 
     return row
@@ -111,11 +128,19 @@ def run(output_file, profile, initial_date):
             {
                 'from': dt
             }
+        ],
+        'eventTypeCategories': [
+            'accountNotification',
+            'scheduledChange'
+        ],
+        'eventStatusCodes': [
+            'open',
+            'upcoming'
         ]
     }, maxResults=100)['events']
 
     events.sort(key=lambda e: e['startTime'])
-    mapped_events = list(map(populate_and_format, events))
+    mapped_events = list(filter(lambda event: event != None, map(populate_and_format, events)))
     setup_csv(output_file, mapped_events)
 
 
