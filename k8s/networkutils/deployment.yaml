@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: networkutils
+  name: networkutils
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: networkutils
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: networkutils
+    spec:
+      containers:
+      - image: amouat/network-utils
+        name: network-utils
+        command:
+        - /bin/bash
+        - -c
+        - sleep infinity
+        resources: {}
+        volumeMounts:
+          - mountPath: /data
+            name: data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+              claimName: data-alpha-0
+status: {}
