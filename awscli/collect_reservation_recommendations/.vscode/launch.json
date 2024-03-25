@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python: Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "python": "/home/cflor/.local/share/virtualenvs/collect_reservation_recommendations-tl7CuJGB/bin/python",
+            "args": [
+                "--output-path",
+                "output.csv",
+                "--term-in-years",
+                "THREE_YEARS",
+                "--res-service-type",
+                "ec2"
+            ]
+        }
+    ]
+}
