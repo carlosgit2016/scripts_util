@@ -110,7 +110,6 @@ def populate_and_format(event):
 
     return row
 
-
 @click.command()
 @click.option("--output-file", default="output.csv", help="Output file")
 @click.option("--profile", help="AWS Profile")

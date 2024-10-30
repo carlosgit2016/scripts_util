@@ -1,0 +1,20 @@
+
+{{range .}}[{{.Profile}}]
+app_id               = 
+url                  = {{.URL}} 
+username             = CFlor@am.trimblecorp.net
+provider             = Okta
+mfa                  = {{.MFA}} 
+skip_verify          = {{.SkipVerify}} 
+timeout              = 0
+aws_urn              = urn:amazon:webservices
+aws_session_duration = {{.AWSSessionDuration}} 
+aws_profile          = {{.Profile}}
+resource_id          = 
+subdomain            = 
+role_arn             = arn:aws:iam::{{.AccountID}}:role/{{.Role}}
+region               = {{.Region}} 
+http_attempts_count  = 
+http_retry_delay     = 
+
+{{end}}
